@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="css/homePage.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="js/homePage.js"></script>
+    <link rel="shortcut icon" href="images/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Find My Files</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Find My Files</h1>
+        <h2>An anti-theft software suite for computers</h2>
+    </div>
+    <div class="wrapperDiv">
+        <div class="container">
+
+            <div id="wrapper">
+                <div class="signup">Sign Up</div>
+                <div class="login">Log In</div>
+            </div>
+
+            <div class="signup-form">
+                <form action="/" method="POST" onsubmit="return comparePassword()">
+                    <input type="text" name="username" placeholder="Choose a Username" class="input" required=""><br/>
+                    <input type="password" name="password" placeholder="Choose a Password" class="input" required=""><br/>
+                    <input type="password" name="passwordConf" placeholder="Confirm your Password" class="input" required=""><br/>
+                    <input type="submit" id="submitBtn" value="Create Account">
+                </form>
+            </div>
+
+            <div class="login-form">
+                <form action="/" method="POST">
+                    <input type="text" name="logUser" placeholder="Username" class="input" required=""><br/>
+                    <input type="password" name="logPass" placeholder="Password" class="input" required=""><br/>
+                    <input type="submit" id="submitBtn" value="Log in">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+var express = require('express');
+var fs = require('fs');
+var app = express();
+var https = require('https');
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var routes = require('./routes/router');
+var User = require('./models/user');
+
+const PORT = 3000;
+
+// connect to MongoDB
+mongoose.connect('mongodb://localhost/findMyFiles', { useNewUrlParser: true });
+var db = mongoose.connection;
+
+// handle mongo error
+db.on('error', console.error.bind(console, 'Database error '));
+db.once('open', function () { /* Connected. */ });
+
+var mongoStore = new MongoStore({mongooseConnection: db});
+var expressSession = session({
+    //key: 'express.sid',
+    secret: '5D7F15F2FCE8DDB2DBEF5C38BE896C238BA7E0A432E396759030A853FA6B1151',
+	resave: true,
+	saveUninitialized: false,
+	store: mongoStore
+});
+
+// use sessions for tracking logins
+app.use(expressSession);
+
+// parse incoming requests
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// serve static files from /public
+app.use(express.static(__dirname + '/frontend'));
+
+// include routes
+app.use('/', routes);
+
+// Function to find by username and see if logged in 
+function isLoggedIn(username) {
+    User.findOne({username: username}).exec(function (error, user) {
+        if(error) {
+            console.log(error);
+            return error;
+        } else {
+            if(user == null) {
+                const err = new Error('Error.');
+                err.status = 401;
+                console.log(error);
+                return err;
+            } else {
+                console.log(user.loggedIn);
+                console.log(user.appId);
+            }
+        }
+    });
+}
+
+
+io.use(function(socket, next) {
+    var handshakeToken = socket.handshake.query.token;
+    var handshakeUser = socket.handshake.query.user;
+    
+    //if appId token is valid and user is logged in, accept
+    console.log(handshakeToken);
+    console.log(handshakeUser);
+    
+    // If handshakeToken exists in database, check if user is logged in
+    if(handshakeToken == '001') { 
+        return next(isLoggedIn(handshakeUser));
+    } else {
+        var errStr = 'Socket authentication error';
+        console.log(errStr);
+        const err = new Error(errStr);
+        err.status = 401;
+        next(err);
+    }
+    
+});
+
+// If appId is correct and user is logged in, accept socket connection
+var namespace = io.of('/dashboard');
+namespace.on('connection', function(socket) {
+    //console.log(socket.handshake.query.token);
+    
+    socket.emit('message', 'hello');
+    
+    socket.on('message', function(data) {
+        console.log('Message: ' + data);
+    });
+});
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+// define as the last app.use callback
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.send(err.message);
+});
+
+// listen on PORT
+http.listen(PORT, function () {
+  console.log('Express app listening on port 3000');
+});

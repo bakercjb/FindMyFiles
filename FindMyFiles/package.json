@@ -1,0 +1,27 @@
+{
+	"name": "FindMyFiles",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "Chris",
+	"license": "none",
+	"scripts": {
+		"start": "node app",
+		"watch": "nodemon app && mongod"
+	},
+	"dependencies": {
+		"bcrypt": "^3.0.0",
+		"body-parser": "^1.18.3",
+		"connect-mongo": "^2.0.1",
+		"cookie-parser": "^1.4.3",
+		"express": "^4.16.3",
+		"express-session": "^1.15.6",
+		"fs": "0.0.1-security",
+		"http": "0.0.0",
+		"https": "^1.0.0",
+		"mongoose": "^5.2.13",
+		"nodemon": "^1.18.4",
+		"passport": "^0.4.0",
+		"passport.socketio": "^3.7.0",
+		"socket.io": "^2.1.1"
+	}
+}
