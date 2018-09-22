@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="css/dashboard.css" rel="stylesheet" type="text/css" media="all" />
+        <!-- <script src="js/dashboard.js"></script> -->
+        <script>
+            function initMap() {
+                //location 
+                //var coord = {lat: -25.344, lng: 131.036};
+                var coord = {lat: 45.3548, lng: -75.5773};
+                
+                var map = new google.maps.Map(document.getElementById('map'),
+                    {zoom: 4, center: coord});
+                
+                var marker = new google.maps.Marker({position: coord, map: map});
+            }
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLx-Swd5xkzj8p2GhrWlxZUW7FHnGYD2A&callback=initMap"></script>
+        <link rel="shortcut icon" href="images/favicon.ico"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Find My Files</title>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Find My Files</h1>
+            <h2>An anti-theft software suite for computers</h2>
+        </div>
+        
+        <div id="map"></div>
+    </body
+</html>

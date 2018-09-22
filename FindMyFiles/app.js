@@ -45,45 +45,39 @@ app.use(express.static(__dirname + '/frontend'));
 app.use('/', routes);
 
 // Function to find by username and see if logged in 
-function isLoggedIn(username) {
-    User.findOne({username: username}).exec(function (error, user) {
+function client_authentication(username, app_id) {
+    User.findOne({username: username, appId: app_id}).exec(function (error, user) {
         if(error) {
             console.log(error);
             return error;
         } else {
             if(user == null) {
-                const err = new Error('Error.');
-                err.status = 401;
-                console.log(error);
+                const err = new Error('User not found!');
+                err.status = 404;
+                console.log(err);
                 return err;
-            } else {
-                console.log(user.loggedIn);
-                console.log(user.appId);
+            } else if(user.loggedIn == false) {
+                const err = new Error('User not logged in!');
+                err.status = 401;
+                console.log(err);
+                return err;
             }
+            console.log(user.loggedIn);
+            console.log(user.appId);
         }
     });
 }
-
 
 io.use(function(socket, next) {
     var handshakeToken = socket.handshake.query.token;
     var handshakeUser = socket.handshake.query.user;
     
     //if appId token is valid and user is logged in, accept
-    console.log(handshakeToken);
-    console.log(handshakeUser);
+    console.log("Handshake token: " + handshakeToken);
+    console.log("Handshake username: " + handshakeUser);
     
     // If handshakeToken exists in database, check if user is logged in
-    if(handshakeToken == '001') { 
-        return next(isLoggedIn(handshakeUser));
-    } else {
-        var errStr = 'Socket authentication error';
-        console.log(errStr);
-        const err = new Error(errStr);
-        err.status = 401;
-        next(err);
-    }
-    
+    return next(client_authentication(handshakeUser, handshakeToken));    
 });
 
 // If appId is correct and user is logged in, accept socket connection
@@ -92,6 +86,8 @@ namespace.on('connection', function(socket) {
     //console.log(socket.handshake.query.token);
     
     socket.emit('message', 'hello');
+    
+    //socket.emit('take_webcam_picture', '');
     
     socket.on('message', function(data) {
         console.log('Message: ' + data);

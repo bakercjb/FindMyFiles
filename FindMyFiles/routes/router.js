@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
 var User = require('../models/user');
 
 // GET route for reading data 
 router.get('/', function (req, res, next) {
-	return res.sendFile(path.join(__dirname + '/frontend/homePage.html'));
+	return res.sendFile(path.join(__dirname + '/../frontend/index.html'));
 });
 
 // POST route for updating data 
@@ -60,8 +61,9 @@ router.get('/dashboard', function (req, res, next) {
 				err.status = 401;
 				return next(err);
 			} else {
+                return res.sendFile(path.join(__dirname + '/../frontend/dashboard.html'));
                 // TODO: Log user in 
-				return res.send('<h1>Name: </h1>' + user.username + '<h2>Username: </h2>' + user.username + '<br><a type="button" href="/logout">Logout</a>')
+				//return res.send('<h1>Name: </h1>' + user.username + '<h2>Username: </h2>' + user.username + '<br><a type="button" href="/logout">Logout</a>')
 			}
 		}
 	});
