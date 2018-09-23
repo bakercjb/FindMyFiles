@@ -1,10 +1,11 @@
 var express = require('express');
 var fs = require('fs');
+var path = require('path');
 var app = express();
 var https = require('https');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
+var ss = require('socket.io-stream');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
@@ -83,9 +84,14 @@ io.use(function(socket, next) {
 // If appId is correct and user is logged in, accept socket connection
 var namespace = io.of('/dashboard');
 namespace.on('connection', function(socket) {
-    //console.log(socket.handshake.query.token);
+    console.log('Socket connected.');
     
     socket.emit('message', 'hello');
+    
+    ss(socket).on('test_pic', function(stream, data) {
+        var filename = path.basename(data.name);
+        stream.pipe(fs.createWriteStream(filename));
+    });
     
     //socket.emit('take_webcam_picture', '');
     
