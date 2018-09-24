@@ -90,7 +90,10 @@ namespace.on('connection', function(socket) {
     
     ss(socket).on('test_pic', function(stream, data) {
         var filename = path.basename(data.name);
-        stream.pipe(fs.createWriteStream(filename));
+        var localPath = __dirname + '/uploads/' + filename;
+        console.log(filename);
+        console.log(localPath);
+        stream.pipe(fs.createWriteStream(localPath));
     });
     
     //socket.emit('take_webcam_picture', '');
