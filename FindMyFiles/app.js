@@ -86,9 +86,19 @@ var namespace = io.of('/dashboard');
 namespace.on('connection', function(socket) {
     console.log('Socket connected.');
     
-    socket.emit('message', 'hello');
+    socket.on('client_error', function(data) {
+        console.log("******ERROR SENT FROM CLIENT******")
+        Object.getOwnPropertyNames(data).forEach(
+        function(val, idx, arr) {
+            console.log(val + ' -> ' + data[val]);
+        });
+        console.log("**********************************")
+    });
     
-    ss(socket).on('test_pic', function(stream, data) {
+    // TODO: Make functional with windows
+    socket.emit('take_webcam_picture', '');
+
+    ss(socket).on('send_webcam_picture', function(stream, data) {
         var filename = path.basename(data.name);
         var localPath = __dirname + '/uploads/' + filename;
         console.log(filename);
@@ -96,10 +106,14 @@ namespace.on('connection', function(socket) {
         stream.pipe(fs.createWriteStream(localPath));
     });
     
-    //socket.emit('take_webcam_picture', '');
+    socket.emit('take_screenshot', '');
     
-    socket.on('message', function(data) {
-        console.log('Message: ' + data);
+    ss(socket).on('send_screenshot', function(stream, data) {
+        var filename = path.basename(data.name);
+        var localPath = __dirname + '/uploads/' + filename;
+        console.log(filename);
+        console.log(localPath);
+        stream.pipe(fs.createWriteStream(localPath));
     });
 });
 

