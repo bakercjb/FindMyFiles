@@ -1,0 +1,170 @@
+h3 {
+    top: 100px;
+    position: relative;
+    text-align: center;
+}
+
+.userLog {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 300px;
+}
+
+.logout {
+    margin-top: 20px;
+    margin-right: 25px;
+    float:right;
+    //background: #CC0000;
+    background: black;
+    height: 30px;
+    width: 125px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    opacity: 0.80;
+    border-radius: 5px;
+}
+
+.logout:hover {
+    opacity: 1;
+    background-color: #b20000;
+}
+
+.welcomeMsg {
+    width: 150px;
+    float: left;
+}
+
+.deviceContainer {
+    top: 50px;
+    background: grey;
+    position: relative;
+    margin: auto;
+    height: 420px;
+    width: 50%;
+    border: 3px solid black;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.deviceMsg {
+    margin: auto;
+}
+
+.installContainer {
+    top: 100px;
+    position: relative;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
+#installBtn {
+    width: 50%;
+    background: #008000;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    opacity: 0.80;
+    border-style: solid;
+    border-radius: 20px;
+    bottom: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    margin-left: -25%;
+}
+
+#installBtn:hover {
+    opacity: 1;
+    background-color: #009900;
+}
+
+table {
+    width:100%;
+    table-layout: fixed;
+}
+.tbl-header {
+    background-color: rgba(255,255,255,0.3);
+ }
+ 
+.tbl-content {
+    height:70%;
+    overflow-x:auto;
+    margin-top: 0px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+th {
+    padding: 20px 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: black;
+    text-transform: uppercase;
+}
+td {
+    padding: 15px;
+    text-align: center;
+    vertical-align:middle;
+    font-weight: 300;
+    font-size: 12px;
+    color: black;
+    border-bottom: solid 1px rgba(255,255,255,0.1);
+}
+
+.status {
+    width: 44%;
+    padding: 5px;
+    color: lightgreen;
+}
+
+.viewDevice {
+    width: 18%;
+    padding-right: 30px;
+    padding-left:1px;
+}
+
+#viewBtn {
+    width: 100%;
+    height: 100%;
+    border-style: solid;
+    border-radius: 5px;
+
+}
+
+.emptyCol {
+    width:100px;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+body {
+    font-family: 'Roboto', sans-serif;
+}
+section {
+    margin-top: 20px;
+    height: 100%;
+    width: 100%;
+}
+
+
+/* for custom scrollbar for webkit browser*/
+
+::-webkit-scrollbar {
+    width: 6px;
+} 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+} 
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+}

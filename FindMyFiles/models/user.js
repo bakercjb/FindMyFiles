@@ -24,7 +24,7 @@ var userSchema = new Schema({
     }
 });
 
-//TODO: make new file "device.js" and have appId as its key
+//TODO: make new file "device.js" and have appId as its key, as well as fields like webcamPhoto, screenshot, coords, ip
 
 // authenticate input against database
 userSchema.statics.authenticate = function (username, password, callback) {
