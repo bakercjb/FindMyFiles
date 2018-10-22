@@ -26,7 +26,7 @@ router.post('/', function (req, res, next) {
 				return next(error);
 			} else {
 				req.session.userId = user._id;
-				return res.redirect('/dashboard');
+				return res.redirect('/mainMenu');
 			}
 		});
         
@@ -38,7 +38,7 @@ router.post('/', function (req, res, next) {
 				return next(err);
 			} else {
 				req.session.userId = user._id;
-				return res.redirect('/dashboard');
+				return res.redirect('/mainMenu');
 			}
 		});
         
@@ -51,7 +51,7 @@ router.post('/', function (req, res, next) {
 
 
 // GET route after registering 
-router.get('/dashboard', function (req, res, next) {
+router.get('/mainMenu', function (req, res, next) {
 	User.findById(req.session.userId).exec(function (error, user) {
 		if (error) {
 			return next(error);
@@ -61,7 +61,7 @@ router.get('/dashboard', function (req, res, next) {
 				err.status = 401;
 				return next(err);
 			} else {
-                return res.sendFile(path.join(__dirname + '/../frontend/dashboard.html'));
+                return res.sendFile(path.join(__dirname + '/../frontend/mainMenu.html'));
                 // TODO: Log user in 
 				//return res.send('<h1>Name: </h1>' + user.username + '<h2>Username: </h2>' + user.username + '<br><a type="button" href="/logout">Logout</a>')
 			}

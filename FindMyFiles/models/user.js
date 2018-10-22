@@ -20,7 +20,13 @@ var userSchema = new Schema({
     },
     appId: {
         type: String,
-        required: false
+        unique: true,
+        required: false // If user has never installed, generate appId
+    },
+    socketId: {
+        type: String,
+        required: false,
+        unique: true
     }
 });
 

@@ -35,11 +35,12 @@ function send_file(socket, filename, command) {
 }
 
 /* Package these variables in exe */
+const DEVICE_ID = 'device001'; // This should be sent too
 const APP_ID = '001';
 const USER = 'a';
 /*********************************/
 
-var socket = io.connect('http://' + HOST + ':' + PORT + '/dashboard',
+var socket = io.connect('http://' + HOST + ':' + PORT,
     {query: {token: APP_ID, user: USER}});
     
 var platform = os.platform();

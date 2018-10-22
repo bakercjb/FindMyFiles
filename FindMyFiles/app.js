@@ -82,9 +82,23 @@ io.use(function(socket, next) {
 });
 
 // If appId is correct and user is logged in, accept socket connection
-var namespace = io.of('/dashboard');
-namespace.on('connection', function(socket) {
+io.on('connection', function(socket) {
     console.log('Socket connected.');
+    
+    // change to device. on disconnect remove socketId so they dont show up in menu
+    // clicking "refresh" on device page should send an emission to the specific socketId
+    /* User.findOne({"username":socket.handshake.query.user}, function(err, user) {
+        if(!err) {
+            user.socketId = socket.id;
+            user.save(function(err) {
+                if(!err) {
+                    console.log("user: [ " + user.username + " ] registered with socket id: " + user.socketId);
+                } else {
+                    console.log("Error: could not save user " + user.username);
+                }
+            });
+        }
+    }); */
     
     socket.on('client_error', function(data) {
         console.log("******ERROR SENT FROM CLIENT******")
