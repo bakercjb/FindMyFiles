@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var path = require('path');
+var ejs = require('ejs');
 var app = express();
 var https = require('https');
 var http = require('http').Server(app);
@@ -12,6 +13,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var routes = require('./routes/router');
 var User = require('./models/user');
+var Device = require('./models/device');
 
 const PORT = 3000;
 
@@ -42,71 +44,70 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // serve static files from /public
 app.use(express.static(__dirname + '/frontend'));
 
+app.set('view engine', 'ejs')
+
 // include routes
 app.use('/', routes);
 
-// Function to find by username and see if logged in 
-function client_authentication(username, app_id) {
-    User.findOne({username: username, appId: app_id}).exec(function (error, user) {
+// Function to find client by app_id and see if logged in 
+function client_authentication(app_id, device_id, socket_id, callback) {
+    // TODO take appId from device and compare it to hashed appId in db.
+    // TODO update users with connected devices 
+    Device.findOne({appId: app_id, deviceId: device_id}).exec(function (error, device) {
         if(error) {
             console.log(error);
-            return error;
+            return callback(error, false);
+            
         } else {
-            if(user == null) {
-                const err = new Error('User not found!');
-                err.status = 404;
-                console.log(err);
-                return err;
-            } else if(user.loggedIn == false) {
-                const err = new Error('User not logged in!');
-                err.status = 401;
-                console.log(err);
-                return err;
+            if(device == null) {
+                const err = new Error('Device not found!');
+                console.log(err.message);
+                return callback(err, false);
+                
             }
-            console.log(user.loggedIn);
-            console.log(user.appId);
+            device.socketId = socket_id;
+            device.connected = true;
+            device.save(function(err) {
+                if(err) { return callback(err, false); }
+                
+                // Device is authenticated
+                return callback(false, true);
+            });
         }
     });
 }
 
-io.use(function(socket, next) {
-    var handshakeToken = socket.handshake.query.token;
-    var handshakeUser = socket.handshake.query.user;
-    
-    //if appId token is valid and user is logged in, accept
-    console.log("Handshake token: " + handshakeToken);
-    console.log("Handshake username: " + handshakeUser);
-    
-    // If handshakeToken exists in database, check if user is logged in
-    return next(client_authentication(handshakeUser, handshakeToken));    
-});
-
 // If appId is correct and user is logged in, accept socket connection
 io.on('connection', function(socket) {
-    console.log('Socket connected.');
+    // Create dictionary hosting devices possessed by client, and update their statuses
+    // based on connections (offline or online)
     
-    // change to device. on disconnect remove socketId so they dont show up in menu
-    // clicking "refresh" on device page should send an emission to the specific socketId
-    /* User.findOne({"username":socket.handshake.query.user}, function(err, user) {
-        if(!err) {
-            user.socketId = socket.id;
-            user.save(function(err) {
-                if(!err) {
-                    console.log("user: [ " + user.username + " ] registered with socket id: " + user.socketId);
-                } else {
-                    console.log("Error: could not save user " + user.username);
-                }
-            });
-        }
-    }); */
+    socket.auth = false;
+    socket.on('authenticate', function(data) {
+        //check client tokens       
+        client_authentication(data.app_id, data.device_id, socket.id, function(err, success) {
+            if(!err && success) {
+                console.log("\nAuthenticated socket ", socket.id, '\n');
+                socket.auth = true;
+            }
+        });
+    });
+    
+    setTimeout(function() {
+        // If socket did not authenticate, disconnect it 
+        if(!socket.auth) {
+            console.log("\nDisconnecting socket ", socket.id, '\n');
+            socket.disconnect('unauthorized');
+        } 
+    }, 1000);
     
     socket.on('client_error', function(data) {
-        console.log("******ERROR SENT FROM CLIENT******")
+        console.log("\n******ERROR SENT FROM CLIENT******")
         Object.getOwnPropertyNames(data).forEach(
         function(val, idx, arr) {
             console.log(val + ' -> ' + data[val]);
         });
-        console.log("**********************************")
+        console.log("**********************************\n")
     });
     
     // TODO: Make functional with windows
@@ -133,19 +134,19 @@ io.on('connection', function(socket) {
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    const err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 // define as the last app.use callback
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.send(err.message);
+    res.status(err.status || 500);
+    res.send(err.message);
 });
 
 // listen on PORT
 http.listen(PORT, function () {
-  console.log('Express app listening on port 3000');
+    console.log('Express app listening on port 3000');
 });

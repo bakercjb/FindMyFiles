@@ -14,23 +14,12 @@ var userSchema = new Schema({
 		type: String,
 		required: true
 	},
-    loggedIn: {
-        type: Boolean,
-        required: true
-    },
     appId: {
         type: String,
         unique: true,
         required: false // If user has never installed, generate appId
-    },
-    socketId: {
-        type: String,
-        required: false,
-        unique: true
     }
 });
-
-//TODO: make new file "device.js" and have appId as its key, as well as fields like webcamPhoto, screenshot, coords, ip
 
 // authenticate input against database
 userSchema.statics.authenticate = function (username, password, callback) {
@@ -55,7 +44,7 @@ userSchema.statics.authenticate = function (username, password, callback) {
 
 
 // hashing a password before saving it to the database
-userSchema.pre('save', function (next) {
+/* userSchema.pre('save', function (next) {
 	var user = this;
     bcrypt.genSalt(saltRounds, function(err, salt) {
         bcrypt.hash(user.password, salt, function (err, hash) {
@@ -66,7 +55,7 @@ userSchema.pre('save', function (next) {
             next();
         }); 
     });
-});
+}); */
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;

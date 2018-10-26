@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="css/mainMenu.css" rel="stylesheet" type="text/css" media="all" />
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="js/mainMenu.js"></script>        
+        <link rel="shortcut icon" href="images/favicon.ico"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Find My Files</title>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Find My Files</h1>
+            <h2>An anti-theft software suite for computers</h2>
+            
+            <div class="userLog">
+                <h2 class="welcomeMsg">Welcome <%=user.username%>!</h2>
+                <input type="submit" class="logout" value="Logout" onclick="window.location.href='/logout'"/>
+            </div>
+        </div>
+        
+        <div class="deviceContainer">
+            <h2 class="deviceMsg">Your devices:</h2>
+            
+            <% if (devices.length == 0) { %>
+                <h3>You currently do not have Find My Files installed on any devices</h3>
+            <% } else { %>
+                <section>
+                <div class="tbl-header">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th>DEVICE NAME</th>
+                                <th>STATUS</th>
+                                <th class="emptyCol"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tbl-content">
+                    <!-- for loop starts here -->
+                    <% for (var i = 0; i < devices.length; i++) { %>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                                <tr>
+                                    <td><%=  devices[i].name  %></td>
+                                    <td class="status"><%= devices[i].connected %></td>
+                                    <td class="viewDevice">
+                                        <form action="" method="POST">
+                                            <!--TODO: If device has gone offline, redirect to mainmenu and switch connection value -->
+                                            <input type="submit" id="viewBtn" value="View device" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    <% } %>
+                    <!-- for loop ends here -->
+                </div>
+                </section>
+            <% } %>
+            
+        </div>
+        
+        <div class="installContainer">
+            <form action="" method="POST">
+                <input type="submit" id="installBtn" value="Install Client" />
+            </form>
+        </div> 
+    </body>
+</html>
