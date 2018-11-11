@@ -6,14 +6,14 @@ $(document).ready(function() {
         $(".signup-form").hide();
         $(".login-form").show();
         $(".signup").css("background", "#414a4c");
-        $(".login").css("background", "#CC0000");
+        $(".login").css("background", "#003399");
     });
 
     $(".signup").click(function(){
         $(".signup-form").show();
         $(".login-form").hide();
         $(".login").css("background", "#414a4c");
-        $(".signup").css("background", "#CC0000");
+        $(".signup").css("background", "#003399");
     });
 });
 

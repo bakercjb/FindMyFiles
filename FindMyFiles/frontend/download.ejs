@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="css/download.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="js/download.js"></script>
+    <link rel="shortcut icon" href="images/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Find My Files</title>
+</head>
+<body>
+    <div class="header">
+        <h1>Find My Files</h1>
+        <h2>An anti-theft software suite for computers</h2>
+        
+        <div class="userLog">
+            <h3 class="welcomeMsg">Welcome <%=user.username%>!</h3>
+            <input type="submit" class="logout" value="Logout" onclick="window.location.href='/logout'"/>
+        </div>
+    </div>
+
+    <!-- On download, bring up popup stating that download has began... -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Your client download has begun, please do NOT navigate away from this page until the download has completed.</p>
+        </div>
+    </div>
+    
+    <div class="wrapperDiv">
+        <div class="container">
+            <h4>Name your device and download its client!</h4>
+            <div class="download-form">
+                <form action="/download" method="POST" onsubmit="return notice()">
+                    <input type="text" name="deviceName" id="deviceTxtBox" placeholder="Name your device" required="">
+                    <input type="submit" id="downloadBtn" value="Download Client"/>
+                </form>
+
+            </div>    
+            <input type="submit" class="mainMenu" value="Return to main menu" onclick="window.location.href='/mainMenu'"/>
+        </div>
+    </div>
+    
+    
+
+</body>
+</html>

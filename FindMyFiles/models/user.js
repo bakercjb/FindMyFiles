@@ -17,7 +17,8 @@ var userSchema = new Schema({
     appId: {
         type: String,
         unique: true,
-        required: false // If user has never installed, generate appId
+        required: false,
+        sparse: true
     }
 });
 

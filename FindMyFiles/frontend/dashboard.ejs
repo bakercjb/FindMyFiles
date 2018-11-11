@@ -2,12 +2,14 @@
 <html>
     <head>
         <link href="css/dashboard.css" rel="stylesheet" type="text/css" media="all" />
-        <!-- <script src="js/dashboard.js"></script> -->
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="js/dashboard.js"></script>
         <script>
             function initMap() {
-                //location 
-                //var coord = {lat: -25.344, lng: 131.036};
-                var coord = {lat: 45.3548, lng: -75.5773};
+                var ejsCoords = [<%- loc %>];
+                var lat = parseFloat(ejsCoords[0]);
+                var lon = parseFloat(ejsCoords[1]);
+                var coord = {lat: lat, lng: lon};
                 
                 var map = new google.maps.Map(document.getElementById('map'),
                     {zoom: 4, center: coord});
@@ -23,12 +25,56 @@
     <body>
         <div class="header">
             <h1>Find My Files</h1>
-            <h2>An anti-theft software suite for computers</h2>
+            <h2>An anti-theft software suite for computers <br> </h2>
+            <h4><i>Your device was last seen in the area below</i></h4>
+            
+            <div class="userLog">
+                <h3 class="welcomeMsg">Welcome <%=user.username%>!</h3>
+                <input type="submit" class="logout" value="Logout" onclick="window.location.href='/logout'"/>
+                <input type="submit" class="menu" value="Main menu" onclick="window.location.href='/mainMenu'"/>
+            </div>
         </div>
         
         <div id="map"></div>
-        <span id="webcamPhotoArea">
-            <label for=""
-        </span>
+        
+        <div class="ipInfo">
+            <p style="padding-left:12em;"><b>Device Information</b></p>
+            <p style="padding-left:2em;"><b>IP Address:</b> <%- ip %></p>
+            <p style="padding-left:2em;"><b>Access point:</b><%- org %></p>
+            <p style="padding-left:2em;"><b>City:</b><%- city %></p>
+            <p style="padding-left:2em;"><b>Country:</b><%- country %></p>
+            <p style="padding-left:2em;"><b>Region:</b><%- region %></p>
+            <p style="padding-left:2em;"><b>Coordinates:</b><%- loc %></p>
+        </div>
+        
+        
+        <img id="webcamId" src="uploads/webcam.jpg" alt="Webcam photo retrieved from your device." width="400" height="400">
+        
+        <div id="webcamModal" class="modal">
+            <span class="close">x</span>
+            <img class="modal-content" id="webcamModalImg">
+            <div id="webcamCaption"></div>
+        </div>
+        
+        <div class="webcam-form">
+            <form action="/capture_webcam" method="GET" onsubmit="delay()">
+                <input type="submit" id="webcamBtn" value="Get new webcam photo"/>
+            </form>
+        </div> 
+        
+        <img id="screenshotId" src="uploads/screenshot.jpg" alt="Screenshot retrieved from your device." width="400" height="400">
+        
+        <div id="screenshotModal" class="modal">
+            <span class="closeScreenshot">x</span>
+            <img class="modal-content" id="screenshotModalImg">
+            <div id="screenshotCaption"></div>
+        </div>
+        
+        <div class="screenshot-form">
+            <form action="/capture_screenshot" method="GET" onsubmit="delay()">
+                <input type="submit" id="screenshotBtn" value="Get new screenshot"/>
+            </form>
+        </div> 
+        
     </body>
 </html>

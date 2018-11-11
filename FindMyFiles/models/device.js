@@ -11,7 +11,7 @@ var deviceSchema = new Schema({
     },
     deviceId: {
         type: Number,
-        unique: true,
+        unique: false,
         required: true
     },
     name: {
@@ -24,12 +24,10 @@ var deviceSchema = new Schema({
         required: false
     },
     connected: {
-        type: Boolean,
+        type: String,
         required: true
     }
 });
-
-//TODO: have appId as its key, as well as fields like webcamPhoto, screenshot, coords, ip
 
 var Device = mongoose.model('Device', deviceSchema);
 module.exports = Device;

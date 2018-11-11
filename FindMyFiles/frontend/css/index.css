@@ -4,11 +4,11 @@
 
 .header { 
     text-align: left;
+        color: white;
 }
 
 h1 {
     display: inline-block;
-    color: #232b2b;
     font-weight: bold;
     font-size: 70px;
     margin: 60px 230px auto auto;
@@ -27,7 +27,9 @@ h2 {
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 body {
-    background-image: url(../images/abstract-abstract-photo-architectural.jpg);
+    //background-image: url(../images/abstract-abstract-photo-architectural.jpg);
+    //background-image: url(../images/abstract-art-background-633409.jpg);
+    background-image: url(../images/abstract-astronomy-dark-924824.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center; 
@@ -47,8 +49,9 @@ body {
     margin: 70px 70px auto 100px;
     float: left;
     border-style: solid;
-    border-color: #CC0000;
+    border-color: white;
     border-radius: 20px;
+    opacity: 0.9;
 }
 
 #wrapper {
@@ -59,7 +62,7 @@ body {
 
 #submitBtn {
     width: 100%;
-    background: #CC0000;
+    background: #003399;
     height: 60px;
     text-align: center;
     line-height: 60px;
@@ -68,18 +71,18 @@ body {
     font-weight: bold;
     letter-spacing: 1px;
     cursor: pointer;
-    opacity: 0.80;
+    opacity: 0.70;
     border: none;
 }
 
 #submitBtn:hover {
     opacity: 1;
-    background-color: #b20000;
+    background-color: #0033CC;
 }
 
 .signup {
     width: 50%;
-    background: #CC0000;
+    background: #003399;
     float: left;
     height: 60px;
     line-height: 60px;
@@ -138,11 +141,11 @@ body {
 }
 
 .input:focus {
-    border: 2px solid #CC0000;
+    border: 2px solid #003399;
 }
 
 .signup:hover,
 .login:hover {
     opacity: 1;
-    background-color: #b20000;
+    background-color: #0033CC;
 }

@@ -14,7 +14,7 @@
             <h2>An anti-theft software suite for computers</h2>
             
             <div class="userLog">
-                <h2 class="welcomeMsg">Welcome <%=user.username%>!</h2>
+                <h3 class="welcomeMsg">Welcome <%=user.username%>!</h3>
                 <input type="submit" class="logout" value="Logout" onclick="window.location.href='/logout'"/>
             </div>
         </div>
@@ -22,8 +22,9 @@
         <div class="deviceContainer">
             <h2 class="deviceMsg">Your devices:</h2>
             
+            <!-- Explain here how to download the client-->
             <% if (devices.length == 0) { %>
-                <h3>You currently do not have Find My Files installed on any devices</h3>
+                <h3 class="noDevices">You currently do not have Find My Files installed on any devices. <br><br>Click the download button below to get started!</h3>
             <% } else { %>
                 <section>
                 <div class="tbl-header">
@@ -43,11 +44,12 @@
                         <table cellpadding="0" cellspacing="0" border="0">
                             <tbody>
                                 <tr>
-                                    <td><%=  devices[i].name  %></td>
+                                    <td class="deviceName"><%=  devices[i].name  %></td>
                                     <td class="status"><%= devices[i].connected %></td>
                                     <td class="viewDevice">
-                                        <form action="" method="POST">
+                                        <form action="/dashboard" method="GET" onsubmit="">
                                             <!--TODO: If device has gone offline, redirect to mainmenu and switch connection value -->
+                                            <input type="hidden" name="socket" value= "<%= devices[i].socketId %>" /> 
                                             <input type="submit" id="viewBtn" value="View device" />
                                         </form>
                                     </td>
@@ -62,9 +64,9 @@
             
         </div>
         
-        <div class="installContainer">
-            <form action="" method="POST">
-                <input type="submit" id="installBtn" value="Install Client" />
+        <div class="downloadContainer">
+            <form action="/download" method="GET">
+                <input type="submit" id="downloadBtn" value="Download Client" />
             </form>
         </div> 
     </body>

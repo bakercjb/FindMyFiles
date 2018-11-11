@@ -1,13 +1,3 @@
-#map {
-    width: 45%;
-    height: 350px;
-    background-color: grey;
-    position: relative;
-    left: 40px;
-    top: 20px;
-    border-radius: 5px;
-}
-
 h1 {
     width: 50%;
     color: white;
@@ -18,11 +8,12 @@ h2 {
 }
 
 h4 {
+    color: white;
+    left: 60px;
+    top: 60px;
     position: relative;
-    top: 40px;
-    left: 40px;
-    color: #DC143C;
 }
+
 .userLog {
     position: absolute;
     top: 0px;
@@ -103,7 +94,6 @@ h4 {
     background-color: green;
 }
 
-
 .welcomeMsg {
     color: white;
     width: 200px;
@@ -117,101 +107,71 @@ h4 {
 }
 
 
-.ipInfo {
-    color: black;
+
+
+.container {
+    left: 25%;
+    background: #232b2b;
     position: relative;
-    right: 70px;
-    top: -330px;
+    //padding: 20px 0 0 0;
+    width: 450px;
+    margin: 70px 70px auto 100px;
+    //float: right;
     border-style: solid;
-    border-color: black;
-    border-radius: 5px;
-    opacity: 0.7;
-    font-family: consolas;
-    width: 40%;
-    float: right;
-    //margin: 4px;
-    height: 349px;
-    background-color: white;
-    
+    border-color: white;
+    border-radius: 20px;
+    opacity: 0.9;
 }
 
-#webcamBtn {
-    background: black;
-    height: 30px;
-    width: 200px;
+.download-form {
+    background: #232b2b;
+    //padding: 40px;
+    clear: both;
+    width: 100%;
+    height: 250px;
+    float: right;
+    border-radius: 20px;
+}
+
+
+#deviceTxtBox {
+    width: 60%;
+    border-radius: 3px;
     text-align: center;
+    left: 90px;
+    top: 100px;
+    position: relative;
+}
+
+#downloadBtn {
+    width: 90%;
+    background: #003399;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
     text-transform: uppercase;
     color: #fff;
     font-weight: bold;
-    font-size: 12px;
     letter-spacing: 1px;
     cursor: pointer;
-    opacity: 0.80;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 180px;
-    left: 230px;
+    //opacity: 0.70;
+    //border: none;
+    border-style: solid;
+    border-radius: 20px;
+    position: relative;
+    top: 150px;
+    left:20px;
 }
 
-#webcamBtn:hover {
+#downloadBtn:hover {
     opacity: 1;
+    background-color: #0033CC;
 }
 
-
-#screenshotBtn {
-    background: black;
-    height: 30px;
-    width: 200px;
-    text-align: center;
-    text-transform: uppercase;
-    color: #fff;
+.deviceName {
+    font-size: 14px;
     font-weight: bold;
-    font-size: 12px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    opacity: 0.80;
-    border-radius: 5px;
-    position: absolute;
-    bottom: 180px;
-    right: 250px;
 }
-
-#screenshotBtn:hover {
-    opacity: 1;
-}
-
-#webcamId {
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-    position: relative;
-    top: 70px;
-    left: 217px;
-    width:15%; 
-    height:0%; 
-    margin:4px; 
-    border:1px solid black; 
-    float: left
-
-}
-
-#screenshotId{
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-    position: relative;
-    bottom: -75px;
-    right: -309px;   
-    width:15%; 
-    height:15%; 
-    margin:4px; 
-    border:1px solid black; 
-    float: right;
-
-}
-
-#webcamId:hover {opacity: 0.7;}
-#screenshotId:hover {opacity: 0.7;}
 
 /* The Modal (background) */
 .modal {
@@ -225,94 +185,33 @@ h4 {
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Modal Content (image) */
+/* Modal Content */
 .modal-content {
+    background-color: #fefefe;
     margin: auto;
-    display: block;
+    padding: 20px;
+    border: 1px solid #888;
     width: 80%;
-    max-width: 700px;
-}
-
-/* Caption of Modal Image */
-#webcamCaption, #screenshotCaption {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-    text-align: center;
-    color: #ccc;
-    padding: 10px 0;
-    height: 150px;
-}
-
-/* Add Animation */
-.modal-content, #webcamCaption , #screenshotCaption{    
-    -webkit-animation-name: zoom;
-    -webkit-animation-duration: 0.6s;
-    animation-name: zoom;
-    animation-duration: 0.6s;
-}
-
-@-webkit-keyframes zoom {
-    from {-webkit-transform: scale(0)} 
-    to {-webkit-transform: scale(1)}
-}
-
-@keyframes zoom {
-    from {transform: scale(0.1)} 
-    to {transform: scale(1)}
+    text-align:center;
 }
 
 /* The Close Button */
 .close {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
     font-weight: bold;
-    transition: 0.3s;
 }
 
 .close:hover,
 .close:focus {
-    color: #bbb;
+    color: #000;
     text-decoration: none;
     cursor: pointer;
 }
-
-
-/* The Close Button */
-.closeScreenshot {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.closeScreenshot:hover,
-.closeScreenshot:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
-    .modal-content {
-        width: 100%;
-    }
-}
-
-
-
 
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
@@ -327,5 +226,4 @@ body {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    overflow: hidden;
 }
