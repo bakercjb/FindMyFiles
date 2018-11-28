@@ -2,10 +2,19 @@ var express = require('express');
 var fs = require('fs');
 var path = require('path');
 var ejs = require('ejs');
+var bcrypt = require('bcrypt');
 var app = express();
 var https = require('https');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var server = https.createServer({
+    key: fs.readFileSync('keys/key.pem'),
+    cert: fs.readFileSync('keys/cert.pem'),
+    requestCert: false,
+    rejectUnauthorized: false
+}, app);
+
+
+//var http = require('http').Server(app);
+var io = require('socket.io').listen(server);
 var ss = require('socket.io-stream');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -17,7 +26,7 @@ var Device = require('./models/device');
 
 app.io = io;
 
-const PORT = 3000;
+//const PORT = 3000;
 
 // connect to MongoDB
 mongoose.connect('mongodb://localhost/findMyFiles', { useNewUrlParser: true });
@@ -53,29 +62,42 @@ app.use('/', routes);
 
 // Function to find client by app_id and see if logged in 
 function client_authentication(app_id, device_id, socket_id, callback) {
-    // TODO take appId from device and compare it to hashed appId in db.
-    // TODO update users with connected devices 
-    Device.findOne({appId: app_id, deviceId: device_id}).exec(function (error, device) {
-        if(error) {
-            console.log(error);
-            return callback(error, false);
-            
-        } else {
-            if(device == null) {
-                const err = new Error('Device not found!');
-                console.log(err.message);
-                return callback(err, false);
+    User.findOne({username: app_id}).exec(function (err, user) {
+        if (err) {
+            return callback(err);
+		} else if (!user) {
+			const err = new Error('User not found.');
+			err.status = 401;
+			return callback(err, false);
+		}
+		bcrypt.compare(app_id, user.appId, function (err, result) {
+			if (result === true) {
                 
-            }
-            device.socketId = socket_id;
-            device.connected = 'online';
-            device.save(function(err) {
-                if(err) { return callback(err, false); }
-                
-                // Device is authenticated
-                return callback(false, true);
-            });
-        }
+                Device.findOne({appId: user.appId, deviceId: device_id}).exec(function (error, device) {
+                    if(error) {
+                        console.log(error);
+                        return callback(error, false);
+                        
+                    } else {
+                        if(device == null) {
+                            const err = new Error('Device not found!');
+                            console.log(err.message);
+                            return callback(err, false);
+                            
+                        }
+                        device.socketId = socket_id;
+                        device.save(function(err) {
+                            if(err) { return callback(err, false); }
+                            
+                            // Device is authenticated
+                            return callback(false, true);
+                        });
+                    }
+                });
+			} else {
+				return callback(err, false);
+			}
+		});
     });
 }
 
@@ -93,54 +115,11 @@ io.on('connection', function(socket) {
                 socket.auth = true;
                 socket.emit('authorized','');
                 
-                /** CONSIDER MOVING THIS **/
                 
-                /* socket.on('client_error', function(data) {
-                    console.log("\n******ERROR SENT FROM CLIENT******")
-                    Object.getOwnPropertyNames(data).forEach(
-                    function(val, idx, arr) {
-                        console.log(val + ' -> ' + data[val]);
-                    });
-                    console.log("**********************************\n")
-                });
-                
-
-                socket.emit('take_webcam_picture', '');
-
-                
-                socket.on('send_webcam_picture', function(data) {
-                    fs.writeFile(__dirname + '/uploads/' + 'webcam.jpg', data.buffer, 'base64', function(err) {
-                        if(err){console.log(err);}
-                    });
-                });
-                
-                socket.emit('take_screenshot', '');
-
-                socket.on('send_screenshot', function(data) {
-                    fs.writeFile(__dirname + '/uploads/' + 'screenshot.jpg', data.buffer, 'base64', function(err) {
-                        if(err){console.log(err);}
-                    });
-                });
-                
-                socket.emit('get_ip_info', '');
-                
-                socket.on('send_ip_info', function(data) {
-                    console.log(data);
-                    var client_ip = data.ip;
-                    var client_org = data.org;
-                    var client_city = data.city;
-                    var client_country = data.country;
-                    var client_region = data.region;
-                    
-                    console.log("CLIENT IP DETAILS\n ");
-                    //console.log(client_ip, client_org, client_city, client_country, client_region);
-                }); */
-                
-                /** CONSIDER MOVING THIS **/
             }
         });
     });
-    
+                   
     setTimeout(function() {
         // If socket did not authenticate, disconnect it 
         if(!socket.auth) {
@@ -167,6 +146,12 @@ app.use(function(err, req, res, next) {
 });
 
 // listen on PORT
+server.listen(8080, function() {
+    console.log('Express app listening on port 8080');
+});
+
+/*
 http.listen(PORT, function () {
     console.log('Express app listening on port 3000');
 });
+*/

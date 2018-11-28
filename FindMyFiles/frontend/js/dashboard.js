@@ -6,6 +6,12 @@ $(document).ready(function() {
     var img = document.getElementById('webcamId');
     var modalImg = document.getElementById("webcamModalImg");
     var captionText = document.getElementById("webcamCaption");
+    
+    
+    if(img.src == 'data:image/jpg;base64,') {
+        img.style.visibility = "hidden";    
+    }
+        
     img.onclick = function(){
         modal.style.display = "block";
         modalImg.src = this.src;
@@ -20,15 +26,17 @@ $(document).ready(function() {
         modal.style.display = "none";
     }
     
-    
-    
-    
     var screenShotModal = document.getElementById('screenshotModal');
 
     // Get the image and insert it inside the modal - use its "alt" text as a caption
     var screenshotImg = document.getElementById('screenshotId');
     var screenshotModalImg = document.getElementById("screenshotModalImg");
     var screenshotCaptionText = document.getElementById("screenshotCaption");
+    
+    if(screenshotImg.src == 'data:image/jpg;base64,') {
+        screenshotImg.style.visibility = "hidden";    
+    }
+    
     screenshotImg.onclick = function(){
         screenShotModal.style.display = "block";
         screenshotModalImg.src = this.src;

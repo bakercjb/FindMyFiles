@@ -23,9 +23,13 @@ var deviceSchema = new Schema({
         type: String,
         required: false
     },
-    connected: {
-        type: String,
-        required: true
+    screenshot: {
+        data: Buffer,
+        contentType: String
+    },
+    webcam: {
+        data: Buffer,
+        contentType: String
     }
 });
 

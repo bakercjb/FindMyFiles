@@ -32,7 +32,6 @@
                         <thead>
                             <tr>
                                 <th>DEVICE NAME</th>
-                                <th>STATUS</th>
                                 <th class="emptyCol"></th>
                             </tr>
                         </thead>
@@ -45,11 +44,11 @@
                             <tbody>
                                 <tr>
                                     <td class="deviceName"><%=  devices[i].name  %></td>
-                                    <td class="status"><%= devices[i].connected %></td>
                                     <td class="viewDevice">
                                         <form action="/dashboard" method="GET" onsubmit="">
-                                            <!--TODO: If device has gone offline, redirect to mainmenu and switch connection value -->
                                             <input type="hidden" name="socket" value= "<%= devices[i].socketId %>" /> 
+                                            <input type="hidden" name="appId" value= "<%= devices[i].appId %>" /> 
+                                            <input type="hidden" name="deviceId" value= "<%= devices[i].deviceId %>" /> 
                                             <input type="submit" id="viewBtn" value="View device" />
                                         </form>
                                     </td>
