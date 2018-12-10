@@ -1,3 +1,4 @@
+// Function which displays download notice.
 function notice() {
     // Get the modal
     var modal = document.getElementById('myModal');
@@ -25,7 +26,5 @@ function notice() {
         if (event.target == modal) {
             modal.style.display = "none";
         }
-    }
-    
+    }   
 }
-

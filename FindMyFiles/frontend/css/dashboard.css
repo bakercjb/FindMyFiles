@@ -49,7 +49,6 @@ h4 {
 
 .mainMenu:hover {
     opacity: 1;
-    //background-color: light-grey;
 }
 
 
@@ -129,7 +128,6 @@ h4 {
     font-family: consolas;
     width: 40%;
     float: right;
-    //margin: 4px;
     height: 349px;
     background-color: white;
     
@@ -318,7 +316,6 @@ h4 {
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 body {
     font-family: 'Roboto', sans-serif;
-    //background-image: url(../images/abstract-art-background-633409.jpg);
     background-image: url(../images/abstract-astronomy-dark-924824.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;

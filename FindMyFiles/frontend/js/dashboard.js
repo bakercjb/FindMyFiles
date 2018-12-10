@@ -1,3 +1,4 @@
+// Function which allows users to expand screenshot/webcam photos.
 $(document).ready(function() {
    // Get the modal
     var modal = document.getElementById('webcamModal');
@@ -49,19 +50,14 @@ $(document).ready(function() {
     // When the user clicks on <span> (x), close the modal
     screenshotSpan.onclick = function() { 
         screenShotModal.style.display = "none";
-    }
-
-
- 
+    } 
 });
 
-
+// Delay refresh page when requesting a new webcam/screenshot image
 function delay() {
     var timeout = 3000;
     
     setTimeout(function () {
         window.location.href= window.location.href
     }, timeout);
-    
-    
 }

@@ -9,11 +9,11 @@ var mkdirp = require('mkdirp');
 var AdmZip = require('adm-zip');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-//const readFile = util.promisify(fs.readFile);
-//const writeFile = util.promisify(fs.writeFile);
 const saltRounds = 12;
 const template = path.join(__dirname + '/../client_files/client_template.py');
 
+
+// Function which generates a random string of numbers used for deviceId's in the database.
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -21,6 +21,13 @@ function guid() {
     return s4() + s4() + s4() + s4() + s4();
 }
 
+/* Function which compresses a directory into a zip file.
+   Params:
+    zip_path: Local server path used to store zip file.
+    exe_path: Local server path which points to desired executable to be zipped.
+
+   Returns: a Promise.
+*/
 function zip_exe(zip_path, exe_path) {
     return new Promise(function(res, rej) {
         var zip = new AdmZip();
@@ -34,7 +41,7 @@ function zip_exe(zip_path, exe_path) {
                 return;
             }
             else {
-                console.log('done zipping');
+                console.log('Done zipping\n');
                 res();
                 return;
             }
@@ -42,7 +49,12 @@ function zip_exe(zip_path, exe_path) {
     });
 }
 
-
+/* Function which generates a standalone executable from a Python file.
+   Params:
+    username: User who owns executable.
+    deviceId: Device which executable is made for.
+    output_dir: Local path on server to host zip file.
+*/
 async function generate_exe(username, deviceId, output_dir) {
     const {err, stdout, stderr} 
         = await exec('pyinstaller --onefile '+username+deviceId+'.py', {
@@ -50,6 +62,13 @@ async function generate_exe(username, deviceId, output_dir) {
         });
 }
 
+/* Function which copies a file and pastes it in a desired location.
+   Params:
+    source: File to be copied.
+    dest: Pasted file.
+   
+   Returns: a Promise.
+*/
 function copy_file(source, dest) {
     return new Promise(function(res, rej) {
         var readStream = fs.createReadStream(source);
@@ -63,11 +82,18 @@ function copy_file(source, dest) {
         
         readStream.pipe(fs.createWriteStream(dest));
         
-        console.log('done copying');
+        console.log('Done copying');
         res();
     });
 }
 
+/* Function which edits the client Python template to hold user-specific information (appId and deviceId).
+   Params:
+    device_id: Device id used to prove device's identity.
+    username: Unencrypted appId (username) for user and device. Used to prove device's identity.
+    
+   Returns: a Promise.
+*/
 function edit_python_template(device_id, username) {
     
     return new Promise(function(res, rej) {
@@ -84,33 +110,38 @@ function edit_python_template(device_id, username) {
             
             result = result.replace('TEMPDEVICEID', device_id);
             
-            fs.writeFile(client_file, result, 'utf8', function(err) {
-                if(err) {  
-                    rej(err);
-                    return;
-                }
-                else {
-                    setTimeout(function() {
-                        console.log('done editing');
-                        res();
-                    }, 2500);
-                }
-            });
+            console.log('Inserting client values into python template...');
+            
+            setTimeout(function() {
+                fs.writeFile(client_file, result, 'utf8', function(err) {
+                    if(err) {  
+                        rej(err);
+                        return;
+                    }
+                    else {
+                        setTimeout(function() {
+                            console.log('Done editing');
+                            res();
+                        }, 5000); // Wait for edit to finish. Timing issues with fs callbacks were encountered during development.
+                    }
+                });
+            }, 3000); // Wait for replacements to finish. Timing issues with replacements were encountered during development.
         });
     });
 }
 
-// GET route for reading data 
+// GET route for login/signup page
 router.get('/', function (req, res, next) {
 	return res.render(path.join(__dirname + '/../frontend/index'));
 });
 
-// POST route for updating data 
+// POST route for logging in/signing up 
 router.post('/', function (req, res, next) {
 	
 	if (req.body.username && req.body.password && req.body.passwordConf) {
         var promise = createUserPromise(req);
         
+        // Create promise to allow server to create user in database.
         promise.then(function (user) {
             req.session.userId = user._id;
             return res.redirect('/mainMenu');
@@ -152,6 +183,7 @@ router.get('/mainMenu', function (req, res, next) {
                     err.status = 401;
                     return next(err);
                 } else {                
+                    // Insert device(s) into main menu 
                     Device.find({appId: user.appId}).exec(function(err,device_results) {
                         if(err) { return next(err); }
                         return res.render(path.join(__dirname + '/../frontend/mainMenu'), {
@@ -160,7 +192,7 @@ router.get('/mainMenu', function (req, res, next) {
                         });
                     });
                 }
-            }, 1500);
+            }, 3000); // Callback timing issues would occur where database would not finish retrieving user.
 		}
 	});
 });
@@ -190,22 +222,22 @@ router.post('/download', function (req, res, next) {
 		if (error) {
 			return next(error);
 		} else {	
+            // Avoid server request timeout by extending it to infinity, as download speeds vary.
             res.connection.setTimeout(0);
             
             var newDeviceId = guid();
             var deviceName = req.body.deviceName;
             var client_folder = path.join(__dirname + '/../client_files/'+user.username+newDeviceId);
 
+            // Construct device schema template
             var deviceData = {
                 appId: user.appId,
                 deviceId: newDeviceId,
                 name: deviceName,
                 socketId: ''
             };  
-            
-            
-            
-            var client_folder = path.join(__dirname + '/../client_files/'+user.username+newDeviceId);
+
+            // Create directory for user device
             mkdirp(client_folder, function(err) {
                 if(err) { return next(err); }
                 else {                            
@@ -232,10 +264,9 @@ router.post('/download', function (req, res, next) {
                                 .then(function() {
                                     Device.create(deviceData, function(error, device) {
                                         if(error) { return next(error); }
-                                        
-                                        //TODO: Dont allow any usernames outside a-zA-Z0-9
-                                        
+                                                                                
                                         else {
+                                            // Provide user zip file.
                                             res.download(client_folder+'/exe.zip', user.username+deviceName+'.zip', function(err) {
                                                 if(err) { return next(err); }
                                                 else { 
@@ -263,6 +294,12 @@ router.post('/download', function (req, res, next) {
 	});
 });
 
+/* Function which creates a user entry in the database.
+   Params: 
+    req: User request to server.
+    
+   Returns: a Promise.
+*/
 function createUserPromise(req) {
     return new Promise(function (res, rej) {
         var userData = {
@@ -283,7 +320,7 @@ function createUserPromise(req) {
                     bcrypt.hash(userData.username, salt, function (err, hash) {
                         if (err) { rej(err); }
                         else { 
-                            userData.appId = hash;
+                            userData.appId = hash; // Assign appId as hashed and salted username.
                             
                             User.create(userData, function (error, user) {
                                 if (error) {
@@ -292,16 +329,21 @@ function createUserPromise(req) {
                                     res(user);
                                 }
                             });
-                        
                         }
                     });
                 });
-                
             }); 
         });
     });
 }
 
+/* Function which handles device socket communication.
+   Params:
+    socket: Device socket being communicated with.
+    command: Socket command server listens for from device.
+   
+   Returns: a Promise. 
+*/
 function createSocketPromise(socket, command) {
     return new Promise(function (res, rej) {
         socket.once(command, function(data) {
@@ -329,9 +371,10 @@ router.get('/dashboard', function (req, res, next) {
 				err.status = 401;
 				return next(err);
 			} else {    
-                var sockets = req.app.io.nsps['/'].adapter.rooms;
+                var sockets = req.app.io.nsps['/'].adapter.rooms; // List of connected devices
                 var socket_client;
 
+                // Look for device's last recorded socket ID in list of connected devices
                 for (sid in sockets) {
                     if (sid == req.query.socket) {
                         socket_client = req.app.io.sockets.connected[sid];
@@ -339,10 +382,12 @@ router.get('/dashboard', function (req, res, next) {
                     }
                 }
                 
+                // If device is no longer connected, redirect user to main menu.
                 if(socket_client == undefined) {
                     return res.redirect('/mainMenu');
                 }
                 
+                // Send device a request for IP and geographic information.
                 req.app.io.to(req.query.socket).emit('get_ip_info', '');
                 
                 var promise = createSocketPromise(socket_client, 'send_ip_info');
@@ -381,12 +426,12 @@ router.get('/dashboard', function (req, res, next) {
                     console.log(err);
                     return res.redirect('/mainMenu');
                 });
-                                   
 			}
 		}
 	});
 });
 
+// GET request for server to ask device for a webcam picture.
 router.get('/capture_webcam', function(req, res, next) {
 
     User.findById(req.session.userId).exec(function (error, user) {
@@ -398,6 +443,7 @@ router.get('/capture_webcam', function(req, res, next) {
 				err.status = 401;
 				return next(err);
 			} else {                
+                // Check if device is still connected.
                 Device.findOne({appId: user.appId, socketId: req.query.socket}).exec(function (error, device) {
                     if(error) {
                         console.log(error);
@@ -426,6 +472,7 @@ router.get('/capture_webcam', function(req, res, next) {
                             return res.redirect('/mainMenu');
                         }
                         
+                        // Ask device for a webcam photo.
                         req.app.io.to(device.socketId).emit('take_webcam_picture', '');
 
                         var promise = createSocketPromise(socket_client, 'send_webcam_picture');
@@ -434,22 +481,13 @@ router.get('/capture_webcam', function(req, res, next) {
                             device.webcam.data = result.buffer;
                             device.webcam.contentType = 'image/jpg';
                             
+                            // Save webcam photo in device table.
                             device.save(function (err, device) {
                                 if(err) { return next(err); }
                                 else {
                                     return res.redirect('back');
                                 }
                             });
-                            
-                            /* fs.writeFile(__dirname + '/../frontend/uploads/webcam.jpg', result.buffer, 'base64', function(err) {
-                                if(err){
-                                    const err = new Error('Socket error');
-                                    return next(err);     
-                                }
-                                else {
-                                    return res.redirect('back');
-                                }
-                            }); */
                         }).catch(function(err) {
                             console.log(err);
                             return res.redirect('/mainMenu');
@@ -461,7 +499,7 @@ router.get('/capture_webcam', function(req, res, next) {
 	});
 });
 
-
+// GET request for server to ask device for a screenshot.
 router.get('/capture_screenshot', function(req, res, next) {
 
     User.findById(req.session.userId).exec(function (error, user) {
@@ -473,6 +511,7 @@ router.get('/capture_screenshot', function(req, res, next) {
 				err.status = 401;
 				return next(err);
 			} else {                
+                // Ensure device is still connected.
                 Device.findOne({appId: user.appId, socketId: req.query.socket}).exec(function (error, device) {
                     if(error) {
                         console.log(error);
@@ -483,7 +522,6 @@ router.get('/capture_screenshot', function(req, res, next) {
                             const err = new Error('Device not found!');
                             console.log(err.message);
                             return next(err);
-                            
                         }
             
                         console.log("Taking screenshot");
@@ -501,6 +539,7 @@ router.get('/capture_screenshot', function(req, res, next) {
                             return res.redirect('/mainMenu');
                         }
 
+                        // Ask device for a screenshot.
                         req.app.io.to(device.socketId).emit('take_screenshot', '');
                         
                         var promise = createSocketPromise(socket_client, 'send_screenshot');
@@ -515,17 +554,7 @@ router.get('/capture_screenshot', function(req, res, next) {
                                 else {
                                     return res.redirect('back');
                                 }
-                            });
-                            
-                            /* fs.writeFile(__dirname + '/../frontend/uploads/screenshot.jpg', result.buffer, 'base64', function(err) {
-                                if(err){
-                                    const err = new Error('Socket error');
-                                    return next(err);     
-                                }
-                                else {
-                                    return res.redirect('back');
-                                }
-                            }); */
+                            });    
                         }).catch(function(err) {
                             console.log(err);
                             return res.redirect('/mainMenu');
@@ -537,7 +566,7 @@ router.get('/capture_screenshot', function(req, res, next) {
 	});
 });
 
-// GET for logout 
+// GET request to logout user
 router.get('/logout', function (req, res, next) {
     if (req.session) {
 		// delete session object
@@ -550,7 +579,6 @@ router.get('/logout', function (req, res, next) {
 		});
 	}
 });
-
 
 
 module.exports = router;

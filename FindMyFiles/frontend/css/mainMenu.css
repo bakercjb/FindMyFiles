@@ -66,7 +66,6 @@ h2 {
     width: 30%;
     border: 3px solid black;
     border-radius: 20px;
-    //padding: 10px;
     padding-left: 3px;
     padding-right: 3px;
     opacity: 0.8;
@@ -85,7 +84,6 @@ h2 {
     left: 30%;
     position: relative;
     margin: auto;
-    //width: 50%;
     padding: 10px;
     background: transparent;
     opacity: 0.95;
@@ -117,8 +115,6 @@ h2 {
     border-radius: 20px;
     bottom: 5px;
     position: absolute;
-    //top: 15%;
-    //left: 80%;
     margin-right: auto;
     margin-left: auto;
 }
@@ -196,7 +192,6 @@ td {
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 body {
     font-family: 'Roboto', sans-serif;
-    //background-image: url(../images/abstract-art-background-633409.jpg);
     background-image: url(../images/abstract-astronomy-dark-924824.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;

@@ -2,8 +2,7 @@
 <html>
     <head>
         <link href="css/mainMenu.css" rel="stylesheet" type="text/css" media="all" />
-        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-        <script src="js/mainMenu.js"></script>        
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>       
         <link rel="shortcut icon" href="images/favicon.ico"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Find My Files</title>
@@ -22,7 +21,6 @@
         <div class="deviceContainer">
             <h2 class="deviceMsg">Your devices:</h2>
             
-            <!-- Explain here how to download the client-->
             <% if (devices.length == 0) { %>
                 <h3 class="noDevices">You currently do not have Find My Files installed on any devices. <br><br>Click the download button below to get started!</h3>
             <% } else { %>

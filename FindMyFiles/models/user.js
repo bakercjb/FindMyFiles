@@ -3,6 +3,17 @@ var bcrypt = require('bcrypt');
 var Schema = mongoose.Schema;
 const saltRounds = 12;
 
+/*
+    A user is created when a successful registration process is completed from the index page.
+
+    USER SCHEMA:
+    
+    - username: Unique primary key identifier for a user in the database.
+    - password: Password for the user. Passwords are hashed and salted before entry into the database.
+    - appId: Unique identifier for the user which allows tracking for a user's list of devices.
+    
+*/
+
 var userSchema = new Schema({
 	username: {
 		type: String,
@@ -42,21 +53,6 @@ userSchema.statics.authenticate = function (username, password, callback) {
 		});
 	});
 }
-
-
-// hashing a password before saving it to the database
-/* userSchema.pre('save', function (next) {
-	var user = this;
-    bcrypt.genSalt(saltRounds, function(err, salt) {
-        bcrypt.hash(user.password, salt, function (err, hash) {
-            if (err) {
-                return next(err);
-            }
-            user.password = hash;
-            next();
-        }); 
-    });
-}); */
 
 var User = mongoose.model('User', userSchema);
 module.exports = User;

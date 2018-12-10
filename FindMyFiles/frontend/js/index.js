@@ -1,3 +1,4 @@
+// Function to handle login/signup form switching
 $(document).ready(function() {
     $(".login-form").hide();
     $(".login").css("background", "#414a4c");
@@ -17,6 +18,7 @@ $(document).ready(function() {
     });
 });
 
+// Function to ensure password fields are identical 
 function comparePassword() {
     var password1 = document.getElementsByName("password")[0].value;
     var password2 = document.getElementsByName("passwordConf")[0].value;

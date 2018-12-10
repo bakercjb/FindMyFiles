@@ -2,7 +2,7 @@
 	"name": "FindMyFiles",
 	"version": "1.0.0",
 	"main": "index.js",
-	"author": "Chris",
+	"author": "Christopher Baker 100942183",
 	"license": "none",
 	"scripts": {
 		"start": "node app",
