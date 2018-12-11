@@ -82,8 +82,10 @@ function copy_file(source, dest) {
         
         readStream.pipe(fs.createWriteStream(dest));
         
-        console.log('Done copying');
-        res();
+        setTimeout(function() {                
+            console.log('Done copying');
+            res();
+        }, 5000);
     });
 }
 
