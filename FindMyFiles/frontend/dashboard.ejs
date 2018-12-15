@@ -23,6 +23,7 @@
         <title>Find My Files</title>
     </head>
     <body>
+        <div class="page-wrap">
         <div class="header">
             <h1>Find My Files</h1>
             <h2>An anti-theft software suite for computers <br> </h2>
@@ -35,17 +36,20 @@
             </div>
         </div>
         
-        <div id="map"></div>
+        <div class="top-half">
+            <div id="map"></div>
         
-        <div class="ipInfo">
-            <p style="padding-left:12em;"><b>Device Information</b></p>
-            <p style="padding-left:2em;"><b>IP Address:</b> <%- ip %></p>
-            <p style="padding-left:2em;"><b>Access point:</b><%- org %></p>
-            <p style="padding-left:2em;"><b>City:</b><%- city %></p>
-            <p style="padding-left:2em;"><b>Country:</b><%- country %></p>
-            <p style="padding-left:2em;"><b>Region:</b><%- region %></p>
-            <p style="padding-left:2em;"><b>Coordinates:</b><%- loc %></p>
+            <div class="ipInfo">
+                <p style="padding-left:12em;"><b>Device Information</b></p>
+                <p style="padding-left:2em;"><b>IP Address:</b> <%- ip %></p>
+                <p style="padding-left:2em;"><b>Access point:</b><%- org %></p>
+                <p style="padding-left:2em;"><b>City:</b><%- city %></p>
+                <p style="padding-left:2em;"><b>Country:</b><%- country %></p>
+                <p style="padding-left:2em;"><b>Region:</b><%- region %></p>
+                <p style="padding-left:2em;"><b>Coordinates:</b><%- loc %></p>
+            </div>
         </div>
+        
         
         <img id="webcamId" src="data:image/jpg;base64, <%=device.webcam.data%>" alt="Webcam photo retrieved from your device." width="400" height="400">
         
@@ -76,6 +80,6 @@
                 <input type="submit" id="screenshotBtn" value="Get new screenshot"/>
             </form>
         </div> 
-        
+        </div>
     </body>
 </html>

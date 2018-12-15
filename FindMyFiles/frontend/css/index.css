@@ -2,6 +2,12 @@
     box-sizing: border-box;
 }
 
+.page-wrap {
+    width:1350px;
+    margin: 0 auto;
+    position: relative;
+}
+
 .header { 
     text-align: left;
         color: white;

@@ -262,7 +262,14 @@ router.post('/download', function (req, res, next) {
                             .then(function() {
                                 console.log('Zipping exe...');
                                 
-                                zip_exe(client_folder+'/exe.zip', client_folder+'/dist/'+user.username+newDeviceId+'.exe')
+                                var exePath = '';
+                                if(process.platform == 'linux') {
+                                    exePath = client_folder+'/dist/'+user.username+newDeviceId;
+                                } else if(process.platform == 'win32') {
+                                    exePath = client_folder+'/dist/'+user.username+newDeviceId+'.exe';
+                                }
+                                
+                                zip_exe(client_folder+'/exe.zip', exePath)
                                 .then(function() {
                                     Device.create(deviceData, function(error, device) {
                                         if(error) { return next(error); }

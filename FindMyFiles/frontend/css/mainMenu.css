@@ -1,3 +1,9 @@
+.page-wrap {
+    width:1350px;
+    margin: 0 auto;
+    position: relative;
+}
+
 h1 {
     width: 50%;
     color: white;
