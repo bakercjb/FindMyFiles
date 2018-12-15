@@ -132,7 +132,7 @@ h4 {
     color: black;
     position: absolute;
     right: 200px;
-    //top: -30px;
+    font-size: 12pt;
     margin-top: 18px;
     border-style: solid;
     border-color: black;
@@ -160,7 +160,6 @@ h4 {
     border-radius: 5px;
     position: relative;
     bottom: -325px;
-    //left: 230px;
 }
 
 #webcamBtn:hover {

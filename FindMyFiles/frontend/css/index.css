@@ -43,6 +43,8 @@ body {
     background-size: cover;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
+    max-width:100%;
+    overflow-x: hidden;
 }
 
 .container {
